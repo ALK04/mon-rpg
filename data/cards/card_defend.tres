@@ -1,0 +1,14 @@
+[gd_resource type="Resource" script_class="CardData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://data/card_data.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = &"defend"
+display_name = "Arcane Guard"
+description = "Applique un buff de defense a toute l'equipe pendant 2 tours."
+max_rank = 3
+damage_by_rank = PackedInt32Array(5, 7, 10)
+energy_cost = 1
+target_type = 4
+rarity = 1

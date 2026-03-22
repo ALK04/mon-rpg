@@ -1,0 +1,14 @@
+[gd_resource type="Resource" script_class="CardData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://data/card_data.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = &"slash"
+display_name = "Slash"
+description = "Basic sword strike."
+max_rank = 3
+damage_by_rank = PackedInt32Array(18, 30, 48)
+energy_cost = 1
+target_type = 1
+rarity = 0

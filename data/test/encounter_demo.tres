@@ -1,0 +1,24 @@
+[gd_resource type="Resource" script_class="EncounterData" load_steps=13 format=3]
+
+[ext_resource type="Script" path="res://data/encounter_data.gd" id="1"]
+[ext_resource type="Resource" path="res://data/test/hero_knight.tres" id="2"]
+[ext_resource type="Resource" path="res://data/test/hero_mage.tres" id="3"]
+[ext_resource type="Resource" path="res://data/entities/hero_sorcier.tres" id="4"]
+[ext_resource type="Resource" path="res://data/test/enemy_goblin.tres" id="5"]
+[ext_resource type="Resource" path="res://data/test/enemy_orc.tres" id="6"]
+[ext_resource type="Resource" path="res://data/test/card_slash.tres" id="7"]
+[ext_resource type="Resource" path="res://data/test/card_holy_burst.tres" id="8"]
+[ext_resource type="Resource" path="res://data/cards/card_mage_heal.tres" id="9"]
+[ext_resource type="Resource" path="res://data/cards/card_mage_focus.tres" id="10"]
+[ext_resource type="Resource" path="res://data/cards/card_fireball.tres" id="11"]
+[ext_resource type="Resource" path="res://data/cards/card_defend.tres" id="12"]
+
+[resource]
+script = ExtResource("1")
+id = &"encounter_demo"
+display_name = "Trio vs Duo"
+hero_team = [ExtResource("2"), ExtResource("3"), ExtResource("4")]
+enemy_team = [ExtResource("5"), ExtResource("6")]
+starting_deck = [ExtResource("7"), ExtResource("7"), ExtResource("8"), ExtResource("9"), ExtResource("10"), ExtResource("11"), ExtResource("12"), ExtResource("12"), ExtResource("11"), ExtResource("9")]
+starting_hand_size = 3
+combat_seed = 12345

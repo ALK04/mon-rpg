@@ -1,0 +1,14 @@
+[gd_resource type="Resource" script_class="CardData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://data/card_data.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = &"mage_focus"
+display_name = "Arcane Focus"
+description = "Augmente temporairement l'ATK du hero actif pendant ce tour."
+max_rank = 3
+damage_by_rank = PackedInt32Array(8, 14, 22)
+energy_cost = 1
+target_type = 5
+rarity = 1
