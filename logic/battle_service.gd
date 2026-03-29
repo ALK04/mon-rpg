@@ -302,7 +302,7 @@ func execute_turn(scene_tree: SceneTree) -> void:
 		var is_debuffed := enemy_index < enemy_debuff_turns.size() and enemy_debuff_turns[enemy_index] > 0
 		if is_debuffed:
 			incoming_damage = roundi(incoming_damage * 0.7)
-		var reduced_damage := maxi(0, incoming_damage - hero_defense_buff_value[hero_target])
+		var reduced_damage := maxi(0, roundi(incoming_damage * (1.0 - hero_defense_buff_value[hero_target] / 100.0)))
 		hero_hp[hero_target] = maxi(0, hero_hp[hero_target] - reduced_damage)
 
 		var event_text := "Tour %d — %s attaque %s : %d dégâts" % [turn_count, _enemy_name(enemy_index), _hero_name(hero_target), reduced_damage]
@@ -343,7 +343,7 @@ func _execute_player_action(action: QueuedAction, scene_tree: SceneTree) -> void
 	if attacker_stats == null:
 		return
 
-	var effective_attack := attacker_stats.attack_stat + hero_attack_buff_bonus[attacker_index]
+	var effective_attack := attacker_stats.attack_stat + roundi(attacker_stats.attack_stat * hero_attack_buff_bonus[attacker_index] / 100.0)
 	var rank := action.card.rank
 
 	for effect in action.card.data.effects:
@@ -388,14 +388,14 @@ func _apply_effect(effect: CardEffect, action: QueuedAction, rank: int, effectiv
 			if target != -1:
 				hero_attack_buff_bonus[target] = base_value
 				hero_attack_buff_turns[target] = effect.duration
-				battle_event.emit("Tour %d — Buff : %s ATK+%d via %s (%d tours)" % [turn_count, _hero_name(target), base_value, card_name, effect.duration])
+				battle_event.emit("Tour %d — Buff : %s ATK+%d%% via %s (%d tours)" % [turn_count, _hero_name(target), base_value, card_name, effect.duration])
 
 		CardEffect.EffectType.DEF_BUFF:
 			for i in range(hero_hp.size()):
 				if is_hero_alive(i):
 					hero_defense_buff_value[i] = base_value
 					hero_defense_buff_turns[i] = effect.duration
-			battle_event.emit("Tour %d — Buff : Défense équipe +%d via %s (%d tours)" % [turn_count, base_value, card_name, effect.duration])
+			battle_event.emit("Tour %d — Buff : Défense équipe +%d%% via %s (%d tours)" % [turn_count, base_value, card_name, effect.duration])
 
 		CardEffect.EffectType.WEAKEN:
 			var target := _resolve_action_enemy_target(action)
