@@ -258,9 +258,9 @@ func _get_damage_text(card: CardInstance) -> String:
 			CardEffect.EffectType.WEAKEN:
 				parts.append("⬇ -30%% ATK (%d tours)" % effect.duration)
 			CardEffect.EffectType.ATK_BUFF:
-				parts.append("⬆ +%d ATK (%d tours)" % [base, effect.duration])
+				parts.append("⬆ +%d%% ATK (%d tours)" % [base, effect.duration])
 			CardEffect.EffectType.DEF_BUFF:
-				parts.append("🛡 +%d DEF (%d tours)" % [base, effect.duration])
+				parts.append("🛡 +%d%% DEF (%d tours)" % [base, effect.duration])
 
 	if parts.is_empty():
 		# Fallback pour les cartes sans effets déclarés
