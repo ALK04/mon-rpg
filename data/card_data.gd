@@ -26,3 +26,4 @@ enum Rarity {
 @export var target_type: TargetType = TargetType.SINGLE_ENEMY
 @export var rarity: Rarity = Rarity.COMMON
 @export var art: Texture2D
+@export var effects: Array[CardEffect] = []

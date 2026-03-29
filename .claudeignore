@@ -1,0 +1,29 @@
+# Cache et données internes de Godot (INDISPENSABLE à ignorer)
+.godot/
+*.import
+
+# Fichiers binaires et exports
+*.exe
+*.zip
+*.pck
+*.uid
+
+# Assets graphiques (Claude ne peut pas "lire" les images)
+*.svg
+*.png
+*.jpg
+*.jpeg
+*.tga
+*.dds
+*.stex
+
+# Audio
+*.wav
+*.ogg
+*.mp3
+
+# Git
+.git/
+
+# Fichiers de configuration d'éditeur (optionnel)
+.editorconfig

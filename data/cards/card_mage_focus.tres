@@ -1,6 +1,13 @@
-[gd_resource type="Resource" script_class="CardData" load_steps=2 format=3]
+[gd_resource type="Resource" script_class="CardData" load_steps=4 format=3]
 
 [ext_resource type="Script" path="res://data/card_data.gd" id="1"]
+[ext_resource type="Script" path="res://logic/card_effect.gd" id="2"]
+
+[sub_resource type="Resource" id="1"]
+script = ExtResource("2")
+effect_type = 4
+value_by_rank = PackedInt32Array(8, 14, 22)
+duration = 2
 
 [resource]
 script = ExtResource("1")
@@ -12,3 +19,4 @@ damage_by_rank = PackedInt32Array(8, 14, 22)
 energy_cost = 1
 target_type = 5
 rarity = 1
+effects = [SubResource("1")]

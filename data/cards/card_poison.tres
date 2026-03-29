@@ -5,18 +5,18 @@
 
 [sub_resource type="Resource" id="1"]
 script = ExtResource("2")
-effect_type = 5
-value_by_rank = PackedInt32Array(5, 7, 10)
-duration = 2
+effect_type = 2
+value_by_rank = PackedInt32Array(0, 0, 0)
+duration = 3
 
 [resource]
 script = ExtResource("1")
-id = &"defend"
-display_name = "Arcane Guard"
-description = "Applique un buff de defense a toute l'equipe pendant 2 tours."
+id = &"poison"
+display_name = "Poison"
+description = "Empoisonne un ennemi ciblé (max 3 tours). Dégâts croissants : 2%/4%/6% HP max par tour."
 max_rank = 3
-damage_by_rank = PackedInt32Array(5, 7, 10)
+damage_by_rank = PackedInt32Array(0, 0, 0)
 energy_cost = 1
-target_type = 4
+target_type = 1
 rarity = 1
 effects = [SubResource("1")]
