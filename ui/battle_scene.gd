@@ -288,7 +288,41 @@ func _refresh_team_bars() -> void:
 		var hp := _battle.enemy_hp[i] if i < _battle.enemy_hp.size() else 0
 		enemy_team_container.add_child(_build_unit_hp_bar(stats, hp, true, i))
 
-func _build_unit_hp_bar(stats: EntityStats, current_hp: int, is_enemy: bool, unit_index: int) -> Panel:
+func _build_unit_hp_bar(stats: EntityStats, current_hp: int, is_enemy: bool, unit_index: int) -> Control:
+	if not is_enemy:
+		var wrapper := VBoxContainer.new()
+		wrapper.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		wrapper.add_theme_constant_override("separation", 3)
+		wrapper.add_child(_build_hp_panel(stats, current_hp, false, unit_index))
+		wrapper.add_child(_build_energy_bar(unit_index))
+		return wrapper
+	return _build_hp_panel(stats, current_hp, true, unit_index)
+
+func _build_energy_bar(hero_index: int) -> ProgressBar:
+	var energy := _battle.hero_special_energy[hero_index] if hero_index < _battle.hero_special_energy.size() else 0
+	var bar := ProgressBar.new()
+	bar.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	bar.custom_minimum_size = Vector2(0, 8)
+	bar.show_percentage = false
+	bar.max_value = 100
+	bar.value = energy
+	var bg := StyleBoxFlat.new()
+	bg.bg_color = Color(0.10, 0.08, 0.02, 0.9)
+	bg.corner_radius_top_left = 4
+	bg.corner_radius_top_right = 4
+	bg.corner_radius_bottom_left = 4
+	bg.corner_radius_bottom_right = 4
+	bar.add_theme_stylebox_override("background", bg)
+	var fill := StyleBoxFlat.new()
+	fill.bg_color = Color("e2b04a") if energy < 100 else Color(1.0, 1.0, 0.4)
+	fill.corner_radius_top_left = 4
+	fill.corner_radius_top_right = 4
+	fill.corner_radius_bottom_left = 4
+	fill.corner_radius_bottom_right = 4
+	bar.add_theme_stylebox_override("fill", fill)
+	return bar
+
+func _build_hp_panel(stats: EntityStats, current_hp: int, is_enemy: bool, unit_index: int) -> Panel:
 	var panel := Panel.new()
 	panel.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	panel.custom_minimum_size = Vector2(0, 44)

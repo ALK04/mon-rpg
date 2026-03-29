@@ -1,0 +1,28 @@
+[gd_resource type="Resource" script_class="CardData" load_steps=5 format=3]
+
+[ext_resource type="Script" path="res://data/card_data.gd" id="1"]
+[ext_resource type="Script" path="res://logic/card_effect.gd" id="2"]
+
+[sub_resource type="Resource" id="1"]
+script = ExtResource("2")
+effect_type = 4
+value_by_rank = PackedInt32Array(50, 50, 50)
+duration = 2
+
+[sub_resource type="Resource" id="2"]
+script = ExtResource("2")
+effect_type = 5
+value_by_rank = PackedInt32Array(50, 50, 50)
+duration = 2
+
+[resource]
+script = ExtResource("1")
+id = &"mage_ultimate"
+display_name = "Surge Arcanique"
+description = "Imprègne toute l'équipe d'une énergie arcanique : ATK et DEF +50% pendant 2 tours."
+max_rank = 1
+damage_by_rank = PackedInt32Array(0, 0, 0)
+energy_cost = 0
+target_type = 4
+rarity = 3
+effects = [SubResource("1"), SubResource("2")]

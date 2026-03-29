@@ -1,0 +1,22 @@
+[gd_resource type="Resource" script_class="CardData" load_steps=4 format=3]
+
+[ext_resource type="Script" path="res://data/card_data.gd" id="1"]
+[ext_resource type="Script" path="res://logic/card_effect.gd" id="2"]
+
+[sub_resource type="Resource" id="1"]
+script = ExtResource("2")
+effect_type = 0
+value_by_rank = PackedInt32Array(160, 160, 160)
+duration = 0
+
+[resource]
+script = ExtResource("1")
+id = &"sorcier_ultimate"
+display_name = "Singularité"
+description = "Concentre toute la magie du Sorcier en un seul point. Dégâts nucléaires sur une cible."
+max_rank = 1
+damage_by_rank = PackedInt32Array(160, 160, 160)
+energy_cost = 0
+target_type = 1
+rarity = 3
+effects = [SubResource("1")]

@@ -26,6 +26,7 @@ var hero_attack_buff_bonus: Array[int] = []
 var hero_attack_buff_turns: Array[int] = []
 var hero_defense_buff_value: Array[int] = []
 var hero_defense_buff_turns: Array[int] = []
+var hero_special_energy: Array[int] = []
 var enemy_debuff_turns: Array[int] = []
 var enemy_poison_turns: Array[int] = []
 var hand: Array[CardInstance] = []
@@ -54,6 +55,7 @@ func start_battle(encounter_data: EncounterData) -> void:
 	hero_attack_buff_turns.clear()
 	hero_defense_buff_value.clear()
 	hero_defense_buff_turns.clear()
+	hero_special_energy.clear()
 	enemy_debuff_turns.clear()
 	enemy_poison_turns.clear()
 	hand.clear()
@@ -72,6 +74,7 @@ func start_battle(encounter_data: EncounterData) -> void:
 		hero_attack_buff_turns.append(0)
 		hero_defense_buff_value.append(0)
 		hero_defense_buff_turns.append(0)
+		hero_special_energy.append(0)
 	for enemy in encounter.enemy_team:
 		enemy_hp.append(0 if enemy == null else enemy.max_hp)
 		enemy_debuff_turns.append(0)
@@ -349,6 +352,7 @@ func _execute_player_action(action: QueuedAction, scene_tree: SceneTree) -> void
 	for effect in action.card.data.effects:
 		_apply_effect(effect, action, rank, effective_attack)
 
+	_handle_special_energy_after_action(attacker_index, action.card)
 	_emit_state()
 	await scene_tree.create_timer(0.5).timeout
 
@@ -382,13 +386,20 @@ func _apply_effect(effect: CardEffect, action: QueuedAction, rank: int, effectiv
 				battle_event.emit("Tour %d — %s utilise %s sur %s : +%d PV" % [turn_count, hero_name, card_name, _hero_name(target), heal])
 
 		CardEffect.EffectType.ATK_BUFF:
-			var target := action.target_ally_index
-			if not is_hero_alive(target):
-				target = _first_alive_hero_index()
-			if target != -1:
-				hero_attack_buff_bonus[target] = base_value
-				hero_attack_buff_turns[target] = effect.duration
-				battle_event.emit("Tour %d — Buff : %s ATK+%d%% via %s (%d tours)" % [turn_count, _hero_name(target), base_value, card_name, effect.duration])
+			if action.card.data.target_type == CardData.TargetType.ALL_ALLIES:
+				for i in range(hero_hp.size()):
+					if is_hero_alive(i):
+						hero_attack_buff_bonus[i] = base_value
+						hero_attack_buff_turns[i] = effect.duration
+				battle_event.emit("Tour %d — Buff : Équipe ATK+%d%% via %s (%d tours)" % [turn_count, base_value, card_name, effect.duration])
+			else:
+				var target := action.target_ally_index
+				if not is_hero_alive(target):
+					target = _first_alive_hero_index()
+				if target != -1:
+					hero_attack_buff_bonus[target] = base_value
+					hero_attack_buff_turns[target] = effect.duration
+					battle_event.emit("Tour %d — Buff : %s ATK+%d%% via %s (%d tours)" % [turn_count, _hero_name(target), base_value, card_name, effect.duration])
 
 		CardEffect.EffectType.DEF_BUFF:
 			for i in range(hero_hp.size()):
@@ -481,6 +492,37 @@ func _normalize_hand_state() -> void:
 			continue
 		if hand.size() < HAND_TARGET_SIZE and _draw_one_card_to_hand():
 			changed = true
+	_try_add_ready_ultimate_cards()
+
+func _handle_special_energy_after_action(hero_index: int, card: CardInstance) -> void:
+	if hero_index < 0 or hero_index >= hero_special_energy.size():
+		return
+	var hero_stats: EntityStats = encounter.hero_team[hero_index] as EntityStats
+	if hero_stats == null:
+		return
+	if hero_stats.special_card != null and card.data == hero_stats.special_card:
+		hero_special_energy[hero_index] = 0
+		return
+	var gain := hero_stats.special_energy_gain if hero_stats.special_energy_gain > 0 else 20
+	hero_special_energy[hero_index] = mini(100, hero_special_energy[hero_index] + gain)
+
+func _try_add_ready_ultimate_cards() -> void:
+	for i in range(hero_special_energy.size()):
+		if hero_special_energy[i] < 100:
+			continue
+		if hand.size() >= HAND_TARGET_SIZE:
+			break
+		var hero_stats: EntityStats = encounter.hero_team[i] as EntityStats
+		if hero_stats == null or hero_stats.special_card == null:
+			continue
+		var already_present := false
+		for card in hand:
+			if card.data == hero_stats.special_card:
+				already_present = true
+				break
+		if not already_present:
+			hand.append(CardInstance.new(hero_stats.special_card, 1))
+			battle_event.emit("Tour %d — ✨ %s : Capacité spéciale disponible !" % [turn_count, _hero_name(i)])
 
 func _draw_one_card_to_hand() -> bool:
 	if _draw_pile.is_empty():

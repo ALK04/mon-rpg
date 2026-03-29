@@ -1,0 +1,22 @@
+[gd_resource type="Resource" script_class="CardData" load_steps=4 format=3]
+
+[ext_resource type="Script" path="res://data/card_data.gd" id="1"]
+[ext_resource type="Script" path="res://logic/card_effect.gd" id="2"]
+
+[sub_resource type="Resource" id="1"]
+script = ExtResource("2")
+effect_type = 0
+value_by_rank = PackedInt32Array(100, 100, 100)
+duration = 0
+
+[resource]
+script = ExtResource("1")
+id = &"knight_ultimate"
+display_name = "Jugement Divin"
+description = "Frappe tous les ennemis avec une force dévastratrice."
+max_rank = 1
+damage_by_rank = PackedInt32Array(100, 100, 100)
+energy_cost = 0
+target_type = 2
+rarity = 3
+effects = [SubResource("1")]
