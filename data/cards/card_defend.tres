@@ -6,7 +6,7 @@
 [sub_resource type="Resource" id="1"]
 script = ExtResource("2")
 effect_type = 5
-value_by_rank = PackedInt32Array(5, 7, 10)
+value_by_rank = PackedInt32Array(15, 25, 40)
 duration = 2
 
 [resource]
@@ -15,7 +15,7 @@ id = &"defend"
 display_name = "Arcane Guard"
 description = "Applique un buff de defense a toute l'equipe pendant 2 tours."
 max_rank = 3
-damage_by_rank = PackedInt32Array(5, 7, 10)
+damage_by_rank = PackedInt32Array(15, 25, 40)
 energy_cost = 1
 target_type = 4
 rarity = 1
