@@ -39,6 +39,7 @@ var pending_target_slot_index: int = -1
 
 var _draw_pile: Array[CardData] = []
 var _rng := RandomNumberGenerator.new()
+var _next_action_hero_index: int = 0
 
 # ── Initialisation ─────────────────────────────────────────────────────────────
 
@@ -56,6 +57,7 @@ func start_battle(encounter_data: EncounterData) -> void:
 	hero_defense_buff_value.clear()
 	hero_defense_buff_turns.clear()
 	hero_special_energy.clear()
+	_next_action_hero_index = 0
 	enemy_debuff_turns.clear()
 	enemy_poison_turns.clear()
 	hand.clear()
@@ -114,7 +116,7 @@ func queue_card_from_hand(hand_index: int) -> bool:
 	if card == null or card.data == null:
 		return false
 
-	var hero_index := _first_alive_hero_index()
+	var hero_index := _get_next_action_hero_index()
 	if hero_index == -1:
 		return false
 
@@ -332,6 +334,7 @@ func _cleanup_after_turn() -> void:
 	_reduce_enemy_status_on_end_turn()
 	turn_count += 1
 	pending_target_slot_index = -1
+	_next_action_hero_index = 0
 	_normalize_hand_state()
 
 # ── Exécution des actions joueur ───────────────────────────────────────────────
@@ -506,6 +509,17 @@ func _handle_special_energy_after_action(hero_index: int, card: CardInstance) ->
 	var gain := hero_stats.special_energy_gain if hero_stats.special_energy_gain > 0 else 20
 	hero_special_energy[hero_index] = mini(100, hero_special_energy[hero_index] + gain)
 
+func _get_next_action_hero_index() -> int:
+	var n := hero_hp.size()
+	if n == 0:
+		return -1
+	for i in range(n):
+		var idx := (_next_action_hero_index + i) % n
+		if is_hero_alive(idx):
+			_next_action_hero_index = (idx + 1) % n
+			return idx
+	return -1
+
 func _try_add_ready_ultimate_cards() -> void:
 	for i in range(hero_special_energy.size()):
 		if hero_special_energy[i] < 100:
@@ -521,7 +535,13 @@ func _try_add_ready_ultimate_cards() -> void:
 				already_present = true
 				break
 		if not already_present:
-			hand.append(CardInstance.new(hero_stats.special_card, 1))
+			for slot in action_slots:
+				var a: QueuedAction = slot as QueuedAction
+				if a != null and a.card.data == hero_stats.special_card:
+					already_present = true
+					break
+		if not already_present:
+			hand.insert(0, CardInstance.new(hero_stats.special_card, 1))
 			battle_event.emit("Tour %d — ✨ %s : Capacité spéciale disponible !" % [turn_count, _hero_name(i)])
 
 func _draw_one_card_to_hand() -> bool:
